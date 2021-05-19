@@ -1,0 +1,47 @@
+const passport = require('passport')
+const LocalStrategy = require('passport-local').Strategy
+const Usuario = require('../models/Usuario')
+
+passport.use(
+    new LocalStrategy(
+        {
+            usernameField : 'email',
+            passwordField : 'password'
+        },
+        async (email, password, done) => {
+            try {
+                const usuario = await Usuario.findOne({
+                    where : {
+                        email : email,
+                        activo : 1,
+                    }
+                })
+
+                if (!usuario.verificarPassword(password)) {
+                    return done(null, false, {
+                        message : 'Password Incorrecto'
+                    })
+                }
+
+                return done(null, usuario)
+
+            } catch (error) {
+                return done(null, false, {
+                    message : 'Esa cuenta no existe'
+                })
+            }
+        }
+    )
+)
+
+// SERIALIZAR EL USUARIO
+passport.serializeUser((usuario, callback) => {
+    callback(null, usuario)
+})
+
+// DESERIALIZAR EL USUARIO
+passport.deserializeUser((usuario, callback) => {
+    callback(null, usuario)
+})
+
+module.exports = passport
