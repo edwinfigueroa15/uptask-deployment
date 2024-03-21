@@ -68,11 +68,10 @@ app.use((req, res, next) => {
 app.use('/', routers())
 
 // CREAR EL PUERTO PARA EL SERVIDOR
-const host = process.env.HOST || '0.0.0.0'
 const port = process.env.PORT || 3000
 
-app.listen(port, host, () => {
-    console.log(`Server: http://${host}:${port}`)
+app.listen(port, () => {
+    console.log(`Server: http://localhost:${port}`)
 })
 
 require('./handler/email')
